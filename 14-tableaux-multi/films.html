@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Films</title>
+</head>
+<body>
+    
+    <script>
+        /*
+         * Gestion de films et de séries
+         *
+         * Dans un film, on va stocker
+         *  - le titre (chaine)
+         *  - la date de sortie (année)
+         *  - la durée (minutes)
+         *  - la liste des acteurs (tableau de chaines)
+         *  - Et le format (DVD, VOD, Blu-Ray) (chaine)
+         *  - Le genre (chaine)
+         */
+        var films = [
+            {
+                titre: 'Star Wars: Un nouvel espoir',
+                dateDeSortie: 1977,
+                duree: 125,
+                acteurs: ['Mark Hamill', 'Carrie Fisher', 'Harrison Ford'],
+                format: 'VOD',
+                genre: 'Science-fiction'
+            },
+            {
+                titre: 'Harry Potter à l\'école des sorciers',
+                dateDeSortie: 2001,
+                duree: 152,
+                acteurs: ['Daniel Radcliffe', 'Rupert Grint', 'Emma Watson', 'Mark Hamill'],
+                format: 'DVD',
+                genre: 'Science-fiction'
+            },
+            {
+                titre: 'Le monde de Nemo',
+                dateDeSortie: 2003,
+                duree: 101,
+                acteurs: ['Albert Brooks', 'Nemo', 'Dorie'],
+                format: 'Blu-ray',
+                genre: 'Animation'
+            }
+        ];
+
+        // - Afficher la liste des films (le nom et l'année de sortie)
+        console.log('Afficher la liste des films (le nom et l\'année de sortie) ------------------------');
+
+        for (var i = 0; i < films.length; i++) {
+            console.log(films[i].titre + ' sorti en ' + films[i].dateDeSortie);
+        }
+
+        // - Afficher les films sortis avant 2000
+        console.log('Afficher les films sortis avant 2000 -------------------------');
+
+        for (var i = 0; i < films.length; i++) {
+            if (films[i].dateDeSortie < 2000) {
+                console.log(films[i].titre + ' est sorti avant 2000');
+            }
+        }
+
+        // - Afficher les films qui durent plus de 2h
+        console.log('Afficher les films qui durent plus de 2h ----------------------');
+
+        for (var i = 0; i < films.length; i++) {
+            if (films[i].duree > 120) {
+                console.log(films[i].titre + ' dure plus de 2h.');
+            }
+        }
+
+        // - Afficher la liste des acteurs de Harry Potter
+        console.log('Afficher la liste des acteurs de Harry Potter ----------------------');
+
+        // films[1] correspond au film Harry Potter
+        for (var i = 0; i < films[1].acteurs.length; i++) {
+            console.log(films[1].acteurs[i]);
+        }
+
+        // Alternative plus "générique"
+        for (var i = 0; i < films.length; i++) {
+            if (films[i].titre == 'Harry Potter à l\'école des sorciers') {
+                console.log(films[i].acteurs.join(', '));
+            }
+        }
+
+        // - Afficher uniquement les Blu-ray
+        console.log('Afficher uniquement les Blu-ray ----------------------');
+
+        for (var i = 0; i < films.length; i++) {
+            if (films[i].format === 'Blu-ray') {
+                console.log(films[i].titre + ' est au format Blu-ray');
+            }
+        }
+
+        // - Afficher la durée de chaque film en heures (1h41 pour 101) Pourquoi pas une fonction ?
+        console.log('Afficher la durée de chaque film en heures (1h41 pour 101) Pourquoi pas une fonction ?');
+
+        // Transforme 125 en 2h05m
+        function formatDuree(dureeEnMinutes) {
+            var hour = Math.floor(dureeEnMinutes / 60); // Pour 125, renvoie 2
+            var minutes = dureeEnMinutes % 60; // Pour 125, renvoie 5
+
+            // Ajouter un 0 devant si le nombre de minutes est inférieur à 10
+            if (minutes < 10) {
+                minutes = '0' + minutes;
+            }
+
+            return hour + 'h' + minutes + 'm';
+        }
+
+        for (var i = 0; i < films.length; i++) {
+            /*var hour = Math.floor(films[i].duree / 60); // Pour 125, renvoie 2
+            var minutes = films[i].duree % 60; // Pour 125, renvoie 5
+
+            // Ajouter un 0 devant si le nombre de minutes est inférieur à 10
+            if (minutes < 10) {
+                minutes = '0' + minutes;
+            }
+
+            console.log(hour + 'h' + minutes + 'm');*/
+            console.log(formatDuree(films[i].duree));
+        }
+        
+
+        // - Afficher tous les acteurs qui ont joués dans un film de Science-fiction
+        console.log('Afficher tous les acteurs qui ont joués dans un film de Science-fiction ---------------');
+        // On initialise un tableau vide pour pouvoir le remplir plus tard
+        var acteursSf = [];
+        for (var i = 0; i < films.length; i++) {
+            if (films[i].genre === 'Science-fiction') {
+                //console.log(films[i].acteurs.join(', '));
+                //acteursSf.push(films[i].acteurs.join(', '));
+                // Parcourir tous les acteurs du film en question
+                for (var j = 0; j < films[i].acteurs.length; j++) {
+                    // films[i].acteurs[j] renvoie le nom de chaque acteur un par un
+                    // On vérifie que l'acteur n'est pas déjà présent dans le tableau pour éviter les doublons
+                    if (! acteursSf.includes(films[i].acteurs[j])) {
+                        acteursSf.push(films[i].acteurs[j]);
+                    }
+                }
+            }
+        }
+
+        console.log(acteursSf.join(', '));
+
+        // - Afficher toutes les catégories ainsi que la totalité de la durée de leur film
+        //    Animation: 1h41minutes (101)
+        //    Science-fiction: 4h37minutes (125 + 152)
+        console.log('Afficher toutes les catégories ainsi que la totalité de la durée de leur film ---------------');
+
+        var genres = []; // Je vais stocker tous les genres de films de manière unique ainsi que leur durée
+        //var scienceFiction = 0;
+        //var animation = 0;
+        var genresDuration = {'Science-fiction': 0, 'Animation': 0};
+
+        for (var i = 0; i < films.length; i++) {
+            // console.log(films[i].genre);
+            // Je stocke dans un tableau le genre et la durée du film
+            genres.push([films[i].genre, films[i].duree]);
+        }
+
+        // On va devoir additionner les durées pour une même catégorie
+        for (var i = 0; i < genres.length; i++) {
+            // Si la catégorie qu'on parcours est Science-fiction, on incrémente science fiction avec la bonne durée
+            if (genres[i][0] === 'Science-fiction') {
+                //scienceFiction = scienceFiction + genres[i][1];
+                genresDuration['Science-fiction'] = genresDuration['Science-fiction'] + genres[i][1];
+            } else if (genres[i][0] === 'Animation') {
+                //animation = animation + genres[i][1];
+                genresDuration['Animation'] = genresDuration['Animation'] + genres[i][1];
+            }
+
+            // Si on veut que ce soit dynamique (Fonctionne peu importe le nombre de catégories)
+            var genreName = genres[i][0];
+            var genreDura = genres[i][1];
+            //genresDuration[genreName] = genresDuration[genreName] + genreDura;
+        }
+
+        // Afficher le résultat
+        var genreDoublon = [];
+
+        for (var i = 0; i < genres.length; i++) {
+            var genreName = genres[i][0];
+
+            if (!genreDoublon.includes(genreName)) { // Je vérifie si le genre n'a pas déjà été affiché
+                console.log(genreName + ': ' + formatDuree(genresDuration[genreName]));
+                genreDoublon.push(genreName); // Une fois que le genre a été affiché, on l'ajoute dans les doublons
+            }
+        }
+        
+        /* # TP Gestion de classe
+
+        Nous allons créer un tableau contenant des élèves. On stockera le nom de l'élève ainsi que ses notes.
+
+        ```js
+        var students = [
+            ['Fiorella', [20, 18, 19, 17]],
+            ['Matthieu', [15, 16, 14, 12, 7]],
+            ['Marina', [17, 20, 13, 18, 13, 17]],
+        ];
+        ```
+
+        - Calculer la moyenne de chacun et afficher :
+            Fiorella a X de moyenne.
+            Matthieu a X de moyenne.
+            Marina a X de moyenne.
+
+        - Quel(s) élève(s) ont la meilleure note ?
+        - BONUS: Faites la même chose en stockant des objets */
+    </script>
+</body>
+</html>

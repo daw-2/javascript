@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM</title>
+
+    <style>
+        .color { color: blue }
+        .bg { background-color: lightblue; }
+        .border { border: 1px dashed #000; }
+    </style>
+</head>
+<body>
+    <h1 id="title"></h1>
+    <input type="text" onkeyup="handleChange(this)">
+    <button data-class="color">Ajouter couleur</button>
+    <button data-class="bg">Ajouter fond</button>
+    <button data-class="border">Ajouter bordure</button>
+    <button id="invert">Inverser</button>
+
+    <script>
+        // Fonction valable uniquement en JS pour nous simplifier la vie
+        // Aucun intérêt si on utilise jQuery...
+        function $(element) {
+            return document.querySelector(element);
+        }
+
+        let $$ = (element) => document.querySelectorAll(element);
+
+        let title = $('#title');
+        let buttons = $$('button');
+
+        function handleChange(input) {
+            title.innerHTML = input.value;
+        }
+
+        function changeTextButton(button) {
+            if (title.classList.contains(button.dataset.class)) {
+                button.innerHTML = button.innerHTML.replace('Ajouter', 'Retirer');
+            } else {
+                button.innerHTML = button.innerHTML.replace('Retirer', 'Ajouter');
+            }
+        }
+
+        function handleClasses() {
+            // Gérer le cas du bouton d'inversion
+            if (this.dataset.class == 'invert') {
+                // Checker les classes du titre
+                title.classList.toggle('color');
+                title.classList.toggle('bg');
+                title.classList.toggle('border');
+
+                // Changer le texte des boutons
+                for (let button of buttons) {
+                    // title.classList.toggle(button.dataset.class);
+                    if (title.classList.contains(button.dataset.class)) {
+                        button.innerHTML = button.innerHTML.replace('Ajouter', 'Retirer');
+                    } else {
+                        button.innerHTML = button.innerHTML.replace('Retirer', 'Ajouter');
+                    }
+                    // Solution plus smart
+                    if (button.dataset.class != 'invert') {
+                        // button.click();
+                    }
+                    // Solution encore plus smart (on range le code dans une fonction)
+                    changeTextButton(button);
+                }
+
+                // J'arrête le code avec le return pour éviter de faire le code d'avant
+                return;
+            }
+
+            console.log(this.dataset.class); // la valeur de data-class="border"
+            title.classList.toggle(this.dataset.class); // on ajoute la classe au h1
+
+            if (title.classList.contains(this.dataset.class)) {
+                // this est bien le bouton ici...
+                this.innerHTML = this.innerHTML.replace('Ajouter', 'Retirer');
+            } else {
+                this.innerHTML = this.innerHTML.replace('Retirer', 'Ajouter');
+            }
+            // Solution smart (on range le code dans une fonction)
+            // changeTextButton(this);
+        }
+
+        for (let button of buttons) {
+            button.addEventListener('click', handleClasses);
+        }
+
+        // $('#invert').addEventListener('click', handleInvert);
+
+        /*
+            Ajouter un 4ème bouton qui permet d'inverser le sens des classes.
+            Si on a les 3 classes, on les retire toutes.
+            Si on a aucune classes, on les ajoute toutes.
+            Si on a 2 classes, on les retire et on ajoute la classe qui n'était pas présente.
+        */
+    </script>
+</body>
+</html>
